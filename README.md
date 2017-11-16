@@ -9,8 +9,7 @@ Python 2 or up
 
 Installtion
 -----------
-* As is
-    No installation required
+* As is, no installation required
 * As cron job
     1. Enter cron editing mode: 
     `crontab -e`
