@@ -15,7 +15,7 @@ Installtion
     1. Enter cron editing mode: 
     `crontab -e`
     2. Add the following line:
-    `0 8 * * * <path_to_setup-prepare-commit-msg.py>`
+    `0 8 * * * <path_to_setup-prepare-commit-msg.py> -w <path_to_workspace_directory>`
 
 Usage
 -----

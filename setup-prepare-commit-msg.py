@@ -36,6 +36,7 @@ fi
 print "Start searching for local git repositories at [{}]".format(
     workspace_path)
 git_repositories_count = 0
+failed_git_repositories_count = 0
 for root, directory_names, file_names in os.walk(workspace_path):
   for git_directory_name in fnmatch.filter(directory_names, '*.git'):
     git_directory_path = os.path.join(root, git_directory_name)
@@ -44,15 +45,21 @@ for root, directory_names, file_names in os.walk(workspace_path):
 
     print "Git repository found at [{}], writing file [{}]".format(
         git_directory_path, prepare_commit_msg_file_path)
-    prepare_commit_msg_file = open(prepare_commit_msg_file_path, 'w')
-    prepare_commit_msg_file.write(prepare_commit_msg_file_content)
+    try:
+      prepare_commit_msg_file = open(prepare_commit_msg_file_path, 'w')
+      prepare_commit_msg_file.write(prepare_commit_msg_file_content)
 
-    print "Fix file permissions [{}]".format(prepare_commit_msg_file_path)
-    prepare_commit_msg_file_stat = os.stat(prepare_commit_msg_file_path)
-    os.chmod(prepare_commit_msg_file_path,
-             prepare_commit_msg_file_stat.st_mode | stat.S_IEXEC)
+      print "Fix file permissions [{}]".format(prepare_commit_msg_file_path)
+      prepare_commit_msg_file_stat = os.stat(prepare_commit_msg_file_path)
+      os.chmod(prepare_commit_msg_file_path,
+               prepare_commit_msg_file_stat.st_mode | stat.S_IEXEC)
+    except Exception, e:
+      failed_git_repositories_count += 1
+      print "Processing file [{}] completed failed, proceeding...\n{}".format(
+          prepare_commit_msg_file_path, e)
     print "Processing file [{}] completed successfully".format(
         prepare_commit_msg_file_path)
     git_repositories_count += 1
 
-print "Git repositories found and processed [{}]".format(git_repositories_count)
+print "Git repositories found and processed [{}], with [{}] failed".format(
+    git_repositories_count, failed_git_repositories_count)
